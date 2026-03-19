@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { ChevronDown, HelpCircle, ArrowLeft } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface FAQ {
@@ -17,7 +16,7 @@ const faqs: FAQ[] = [
     id: 1,
     question: "What is GigaLink?",
     answer:
-      "GigaLink is a prepaid, QR-based WiFi system that lets you access the internet instantly—no apps or subscriptions required.",
+      "A prepaid WiFi system for instant internet access. Just scan and connect. Powered by Starlink.",
   },
   {
     id: 2,
@@ -71,83 +70,54 @@ export default function FAQs() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-12 px-4">
-      <div className="max-w-4xl mx-auto space-y-8">
-        {/* Back to Login
+    <div className="min-h-screen bg-white dark:bg-slate-950 py-12 px-6">
+      <div className="max-w-3xl mx-auto">
+        {/* Back to Homepage */}
         <button
-          onClick={() => router.push("/login")}
-          className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+          onClick={() => router.push("/")}
+          className="flex items-center gap-2 text-sm text-slate-500 hover:text-[#5cc3ae] transition-colors mb-16"
         >
           <ArrowLeft size={16} />
-          Back to Sign In
-        </button> */}
+          Back to homepage
+        </button>
 
         {/* Header */}
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-full mb-4">
-            <HelpCircle
-              size={32}
-              className="text-teal-600 dark:text-teal-400"
-            />
-          </div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
-            Frequently Asked Questions
+        <div className="mb-12">
+          <h1 className="text-4xl font-light tracking-tight text-slate-900 dark:text-white mb-4">
+            Gigalink <span className="text-[#5cc3ae]">FAQ</span>
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
-            Find answers to common questions about GigaLink and how to get the
-            most out of your service.
+          <div className="w-12 h-1 bg-[#5cc3ae] mb-6" />{" "}
+          {/* Small accent bar */}
+          <p className="text-slate-500 dark:text-slate-400">
+            Everything you need to know about GigaLink.
           </p>
         </div>
 
         {/* FAQ Accordion */}
-        <div className="space-y-3">
-          {faqs.map((faq, index) => (
-            <motion.div
-              key={faq.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              className={cn(
-                "bg-white dark:bg-slate-800 rounded-xl border overflow-hidden transition-all",
-                openId === faq.id
-                  ? "border-teal-500 ring-2 ring-teal-400/30 shadow-lg"
-                  : "border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md",
-              )}
-            >
+        <div className="divide-y divide-slate-100 dark:divide-slate-800">
+          {faqs.map((faq) => (
+            <div key={faq.id} className="py-2">
               <button
                 onClick={() => toggleFAQ(faq.id)}
-                className="w-full px-6 py-4 flex items-center justify-between gap-4 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-700/50"
+                className="w-full py-7 flex items-center justify-between gap-4 text-left group"
               >
-                <div className="flex items-start gap-4 flex-1">
-                  <div
-                    className={cn(
-                      "flex items-center justify-center w-8 h-8 rounded-full shrink-0 font-bold text-sm transition-colors",
-                      openId === faq.id
-                        ? "bg-teal-500 text-white"
-                        : "bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400",
-                    )}
-                  >
-                    {faq.id}
-                  </div>
-                  <h3 className="font-semibold text-slate-900 dark:text-white pt-1">
-                    {faq.question}
-                  </h3>
-                </div>
-                <motion.div
-                  animate={{ rotate: openId === faq.id ? 180 : 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="shrink-0"
+                <h3
+                  style={{ color: openId === faq.id ? "#5cc3ae" : "" }}
+                  className={`text-lg transition-colors duration-300 ${
+                    openId === faq.id
+                      ? "font-medium"
+                      : "text-slate-700 dark:text-slate-200 group-hover:text-slate-950 dark:group-hover:text-white"
+                  }`}
                 >
-                  <ChevronDown
-                    size={20}
-                    className={cn(
-                      "transition-colors",
-                      openId === faq.id
-                        ? "text-teal-500"
-                        : "text-slate-400 dark:text-slate-500",
-                    )}
-                  />
-                </motion.div>
+                  {faq.question}
+                </h3>
+                <ChevronDown
+                  size={20}
+                  style={{ color: openId === faq.id ? "#5cc3ae" : "" }}
+                  className={`transform transition-all duration-300 ${
+                    openId === faq.id ? "rotate-180" : "text-slate-400"
+                  }`}
+                />
               </button>
 
               <AnimatePresence>
@@ -156,35 +126,22 @@ export default function FAQs() {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
+                    transition={{
+                      duration: 0.3,
+                      ease: [0.04, 0.62, 0.23, 0.98],
+                    }}
                   >
-                    <div className="px-6 pb-5 pl-[72px]">
-                      <div className="pt-2 pb-1 border-t border-slate-200 dark:border-slate-700">
-                        <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                          {faq.answer}
-                        </p>
-                      </div>
+                    <div className="pb-10">
+                      <p className="text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl text-[1.05rem]">
+                        {faq.answer}
+                      </p>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </div>
           ))}
         </div>
-
-        {/* Contact Support
-        <div className="bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-900/10 rounded-2xl border-2 border-teal-200 dark:border-teal-800 p-8 text-center">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-            Still have questions?
-          </h2>
-          <p className="text-slate-600 dark:text-slate-300 mb-4">
-            Our support team is here to help you get the most out of GigaLink.
-          </p>
-          <button className="px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-semibold transition-colors shadow-md shadow-teal-500/30">
-            Contact Support
-          </button>
-        </div> */}
       </div>
     </div>
   );

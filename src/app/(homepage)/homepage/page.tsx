@@ -3,53 +3,21 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import logo from "@/../public/images/gigalink_logo3.png";
+import logo2 from "@/../public/images/gigalink_logo_nostarlink.png";
 import satelliteImg from "@/../public/images/girl.jpg";
 import Image from "next/image";
-import Slider from "react-slick";
-import {
-  ChevronDown,
-  Wifi,
-  Zap,
-  Shield,
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Wifi, Zap, Shield, ChevronDown, ChevronRight } from "lucide-react";
 
-// --- CRITICAL: IMPORT SLICK CSS ---
+// --- CRITICAL: IMPORT SLICK CSS (Kept for consistency if you use Slick elsewhere) ---
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-// Custom Arrow Components
-const NextArrow = (props: any) => {
-  const { onClick } = props;
-  return (
-    <button
-      className="absolute right-4 top-1/2 -translate-y-1/2 z-30 p-2 rounded-full bg-white/10 hover:bg-[#43bbab] text-white transition-all backdrop-blur-md border border-white/20"
-      onClick={onClick}
-    >
-      <ChevronRight size={32} />
-    </button>
-  );
-};
-
-const PrevArrow = (props: any) => {
-  const { onClick } = props;
-  return (
-    <button
-      className="absolute left-4 top-1/2 -translate-y-1/2 z-30 p-2 rounded-full bg-white/10 hover:bg-[#43bbab] text-white transition-all backdrop-blur-md border border-white/20"
-      onClick={onClick}
-    >
-      <ChevronLeft size={32} />
-    </button>
-  );
-};
-
 const carouselImages = [
   {
-    url: "https://images.unsplash.com/photo-1750711158632-5273ec9b9b86?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080",
+    url: "https://i.pinimg.com/1200x/5b/60/1f/5b601fe9773f54d729aba9e223fdfc9a.jpg",
     title: "Fast & Reliable WiFi",
-    description: "Experience lightning-fast internet connectivity anywhere",
+    description:
+      "Experience wireless internet connectivity anytime and anywhere",
   },
   {
     url: "https://sm.pcmag.com/t/pcmag_me/news/b/best-buy-s/best-buy-starts-selling-spacexs-newest-starlink-dish_bdm1.1920.jpg",
@@ -58,13 +26,13 @@ const carouselImages = [
   },
   {
     url: "https://images.unsplash.com/photo-1749584552481-40bfb1abf401?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    title: "Connect Instantly",
+    title: "High Speed Connectivity",
     description: "Get online in seconds with any WiFi-enabled device",
   },
   {
     url: "https://images.unsplash.com/photo-1681321570365-df53da7dbaa2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080",
-    title: "Network Excellence",
-    description: "Seamless connectivity for all your devices",
+    title: "Secured Connectivity",
+    description: "Secured Transactions for all your devices",
   },
   {
     url: "https://images.unsplash.com/photo-1569908420024-c8f709b75700?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080",
@@ -76,19 +44,19 @@ const carouselImages = [
 const faqData = [
   {
     q: "What is GigaLink?",
-    a: "A prepaid, QR-based WiFi system for instant internet. No apps or subscriptions required. Just scan and connect.",
+    a: "A prepaid WiFi system for instant internet access. Just scan and connect. Powered by Starlink.",
   },
   {
     q: "How does GigaLink work?",
-    a: "Connect to GigaLink WiFi, scan your QR voucher, and get online immediately. For technical help, contact inquiry@comclark.com.ph.",
+    a: "Connect to GigaLink WiFi, scan your QR voucher, and get online immediately.",
   },
   {
     q: "Where does GigaLink work?",
-    a: "Wherever Starlink satellites provide coverage, including remote and underserved areas across the Philippines.",
+    a: "Wherever Starlink satellites provide coverage, including remote areas across the Philippines.",
   },
   {
     q: "How reliable is the connection?",
-    a: "Connectivity is delivered by ComClark using satellite broadband powered by Starlink, providing fast and stable internet suitable for public WiFi and events.",
+    a: "Connectivity is delivered by ComClark using satellite broadband powered by Starlink.",
   },
 ];
 
@@ -113,14 +81,28 @@ const features = [
 export default function GigaLinkLandingPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [activeStep, setActiveStep] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check for mobile screen size to adjust 3D Carousel spread
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const getRelativePos = (index: number) => {
+    const len = carouselImages.length;
+    return (index - (activeStep % len) + len) % len;
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-
-    let particles: Particle[] = [];
+    let particles: any[] = [];
     let animationFrameId: number;
 
     const resize = () => {
@@ -151,7 +133,7 @@ export default function GigaLinkLandingPage() {
 
     const init = () => {
       resize();
-      particles = Array.from({ length: 70 }, () => new Particle());
+      particles = Array.from({ length: 50 }, () => new Particle());
     };
 
     const draw = () => {
@@ -160,18 +142,16 @@ export default function GigaLinkLandingPage() {
         p.update();
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(67, 187, 171, 0.8)";
+        ctx.fillStyle = "rgba(67, 187, 171, 0.6)";
         ctx.fill();
-
         for (let j = i + 1; j < particles.length; j++) {
           const p2 = particles[j];
           const dx = p.x - p2.x;
           const dy = p.y - p2.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 180) {
+          if (dist < 150) {
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(67, 187, 171, ${0.15 - dist / 1200})`;
-            ctx.lineWidth = 0.6;
+            ctx.strokeStyle = `rgba(67, 187, 171, ${0.1 - dist / 1500})`;
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
             ctx.stroke();
@@ -190,35 +170,24 @@ export default function GigaLinkLandingPage() {
     };
   }, []);
 
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 800,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 5000,
-    fade: true,
-    pauseOnHover: true,
-    arrows: true, // Enabled arrows
-    nextArrow: <NextArrow />, // Custom component
-    prevArrow: <PrevArrow />, // Custom component
-    cssEase: "cubic-bezier(0.87, 0, 0.13, 1)",
-  };
-
   return (
     <main className="bg-white w-full selection:bg-[#43bbab]/20 overflow-x-hidden text-slate-900">
       {/* SECTION 1: HERO */}
-      <section className="h-screen w-full flex items-center justify-center overflow-hidden relative p-6">
-        <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-100" />
-        <div className="relative z-20 text-center px-4">
+      <section className="min-h-screen w-full flex items-center justify-center overflow-hidden relative p-4 md:p-6">
+        <div
+          className="absolute inset-0 z-10 pointer-events-none"
+          style={{ boxShadow: "inset 0 -50px 150px -50px #5cc3ae66" }}
+        />
+        <canvas ref={canvasRef} className="absolute inset-0 z-0" />
+
+        <div className="relative z-20 text-center w-full max-w-4xl">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2 }}
             className="flex flex-col items-center"
           >
-            <div className="relative w-[300px] md:w-[600px] aspect-[2/1]">
+            <div className="relative w-[280px] sm:w-[400px] md:w-[600px] aspect-[2/1]">
               <Image
                 src={logo}
                 alt="GigaLink Logo"
@@ -227,215 +196,222 @@ export default function GigaLinkLandingPage() {
                 className="object-contain"
               />
             </div>
-            <motion.div className="flex flex-col items-center gap-4 mt-2">
-              <p className="text-slate-400 text-xs md:text-sm font-medium tracking-[0.8em] uppercase">
+            <div className="flex flex-col items-center gap-4 mt-4">
+              <p className="text-slate-400 text-[10px] md:text-sm font-medium tracking-[0.4em] md:tracking-[0.8em] uppercase">
                 The Future of Connectivity
               </p>
-              <div className="flex items-center gap-6">
-                <div className="h-[1px] w-12 bg-[#43bbab]/40" />
-                <span className="text-[#0f172a] text-xl md:text-2xl font-light tracking-[0.2em] uppercase">
+              <div className="flex items-center gap-3 md:gap-6">
+                <div className="h-[1px] w-8 md:w-12 bg-[#43bbab]/40" />
+                <span className="text-[#0f172a] text-lg md:text-2xl font-light tracking-[0.2em] uppercase">
                   Coming Soon
                 </span>
-                <div className="h-[1px] w-12 bg-[#43bbab]/40" />
+                <div className="h-[1px] w-8 md:w-12 bg-[#43bbab]/40" />
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Features */}
-      <section id="features" className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
+      {/* SECTION: WHY CHOOSE */}
+      <section
+        id="features"
+        className="py-20 px-4 bg-white min-h-screen flex items-center"
+      >
+        <div className="max-w-6xl mx-auto w-full">
+          {/* Header Section */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
-            <h2 className="text-4xl font-bold mb-4">Why Choose GigaLink?</h2>
-            <p className="text-slate-400 text-lg">
-              Fast, secure, and incredibly simple
+            <div className="flex flex-row items-center justify-center gap-2 md:gap-4 mb-6">
+              <h2 className="text-2xl md:text-5xl font-normal text-slate-800">
+                Why Choose
+              </h2>
+              <div className="relative top-[-2px] w-[95px] h-[50px] md:w-[165px] md:h-[80px]">
+                <Image
+                  src={logo2} // Replace with your logo2 variable
+                  alt="GigaLink"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <h2 className="text-3xl md:text-5xl font-normal text-slate-800">
+                ?
+              </h2>
+            </div>
+            <p className="max-w-2xl mx-auto text-slate-500 text-base md:text-lg leading-relaxed">
+              Fast, secure, and incredibly simple.
             </p>
           </motion.div>
-          <div className="grid md:grid-cols-3 gap-8">
+
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -10 }} // Subtle lift on hover
+                transition={{
+                  delay: index * 0.1,
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20,
+                }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="bg-white/5 backdrop-blur-sm border border-slate-200 rounded-2xl p-8 hover:bg-slate-50 transition-all group shadow-sm"
+                /* The "Shadow Only" Box:
+                 - bg-white: must be white to match the section background
+                 - shadow-xl: provides the depth
+                 - shadow-slate-200/50: keeps the shadow soft and airy
+              */
+                className="flex flex-col items-center text-center p-10 bg-white rounded-[2.5rem] shadow-[0_20px_50px_#5cc3ae33] hover:shadow-[0_40px_80px_rgba(0,0,0,0.07)] transition-all duration-500 border border-[#00107e]/10"
               >
-                <div className="w-16 h-16 bg-teal-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-teal-500/30 transition-colors">
-                  <feature.icon size={32} className="text-teal-600" />
+                <div className="mb-8 p-5 bg-slate-50 rounded-2xl">
+                  <feature.icon
+                    size={40}
+                    strokeWidth={1.5}
+                    className="text-[#5cc3ae]"
+                  />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">{feature.title}</h3>
-                <p className="text-slate-500">{feature.description}</p>
+
+                <h3 className="text-xl font-bold text-slate-800 mb-4">
+                  {feature.title}
+                </h3>
+
+                <p className="text-slate-500 text-sm leading-relaxed max-w-[260px]">
+                  {feature.description}
+                </p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Carousel Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl font-bold mb-4">See GigaLink in Action</h2>
-            <p className="text-slate-400 text-lg">
+      {/* SECTION: CAROUSEL */}
+      <section className="py-20 px-4 bg-white overflow-hidden min-h-screen flex flex-col justify-center shadow-[inset_0_30px_60px_-30px_#5cc3ae33]">
+        <div className="max-w-7xl mx-auto w-full">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              See GigaLink in Action
+            </h2>
+            <p className="text-slate-500">
               Experience the future of connectivity
             </p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="carousel-container relative rounded-3xl overflow-hidden shadow-2xl shadow-teal-500/20 border border-teal-500/30 bg-slate-900"
-          >
-            <Slider {...sliderSettings}>
-              {carouselImages.map((image, index) => (
-                <div key={index} className="outline-none">
-                  <div className="relative h-[500px] w-full overflow-hidden">
-                    <img
-                      src={image.url}
-                      alt={image.title}
-                      className="w-full h-full object-cover block"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
-                      <h3 className="text-3xl font-bold mb-3 text-white">
-                        {image.title}
-                      </h3>
-                      <p className="text-xl text-slate-300">
-                        {image.description}
-                      </p>
+          </div>
+
+          <div className="relative h-[400px] md:h-[550px] flex items-center justify-center">
+            <div
+              className="relative w-full max-w-5xl h-full flex items-center justify-center"
+              style={{ perspective: "1200px" }}
+            >
+              {carouselImages.map((image, index) => {
+                const relPos = getRelativePos(index);
+                let offset = relPos;
+                if (relPos > carouselImages.length / 2)
+                  offset = relPos - carouselImages.length;
+
+                const isCenter = offset === 0;
+                const isVisible = Math.abs(offset) <= (isMobile ? 1 : 2);
+
+                return (
+                  <motion.div
+                    key={index}
+                    animate={{
+                      x: offset * (isMobile ? 180 : 320), // Responsive spread
+                      scale: isCenter ? 1 : 0.7,
+                      zIndex: 10 - Math.abs(offset),
+                      opacity: isVisible ? (isCenter ? 1 : 0.4) : 0,
+                      rotateY: offset * -20,
+                    }}
+                    transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                    onClick={() => setActiveStep(index)}
+                    className="absolute w-[85%] md:w-[650px] h-[300px] md:h-[450px] cursor-pointer rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl bg-slate-100"
+                    style={{ transformStyle: "preserve-3d" }}
+                  >
+                    <div className="relative w-full h-full">
+                      <img
+                        src={image.url}
+                        alt={image.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+
+                      <AnimatePresence>
+                        {isCenter && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="absolute bottom-0 left-0 right-0 p-6 md:p-10"
+                          >
+                            <h3 className="text-xl md:text-3xl font-bold text-white">
+                              {image.title}
+                            </h3>
+                            <p className="text-sm md:text-lg text-slate-200 mt-2">
+                              {image.description}
+                            </p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </Slider>
-          </motion.div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Nav Dots */}
+          <div className="flex justify-center gap-3 mt-8">
+            {carouselImages.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveStep(i)}
+                className={`h-2 transition-all duration-300 rounded-full ${activeStep % carouselImages.length === i ? "w-8 bg-teal-500" : "w-2 bg-slate-300"}`}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* SECTION 2: FEATURE SPLIT
-      <section className="h-screen w-full flex items-center relative px-6 md:px-24 bg-slate-50 border-y border-slate-100 overflow-hidden">
-        <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full h-full max-h-[85vh]">
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            className="flex flex-col gap-6"
-          >
-            <span className="text-[#43bbab] font-mono tracking-[0.3em] text-xs uppercase font-bold">
-              01 // HIGH-SPEED ACCESS
-            </span>
-            <h2 className="text-[#0f172a] text-5xl md:text-7xl font-black tracking-tighter leading-none">
-              High Speed <br />
-              <span className="text-[#5cbbab] italic font-light">
-                Everywhere.
-              </span>
+      {/* SECTION: FAQ */}
+      <section className="py-20 px-6 bg-white min-h-screen flex items-center shadow-[inset_0_30px_60px_-30px_#5cc3ae33]">
+        <div className="max-w-3xl mx-auto w-full">
+          <div className="mb-12 text-center md:text-left">
+            <h2 className="text-3xl md:text-5xl font-light">
+              Gigalink <span className="text-[#43bbab] font-bold">FAQ</span>
             </h2>
-            <p className="text-slate-500 text-lg md:text-xl leading-relaxed max-w-lg font-light">
-              GigaLink delivers fiber-like speeds via Starlink's global
-              satellite constellation, managed by ComClark.
-            </p>
-            <div className="flex flex-col gap-4">
-              {[
-                "No monthly subscriptions required",
-                "QR Voucher activation",
-                "Inquiries: inquiry@comclark.com.ph",
-              ].map((text, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-4 text-slate-700 group"
-                >
-                  <div className="w-8 h-[2px] bg-[#43bbab] transition-all group-hover:w-12" />
-                  <span className="text-md font-medium">{text}</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+            <div className="h-1 w-16 bg-[#43bbab] mt-4 mx-auto md:mx-0" />
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            className="relative h-full w-full flex items-center justify-center lg:justify-end"
-          >
-            <div className="relative z-10 w-full h-full max-h-[75vh] flex items-center">
-              <Image
-                src={satelliteImg}
-                alt="GigaLink High Speed Internet"
-                className="w-full h-full object-contain drop-shadow-2xl rounded-2xl "
-                priority
-              />
-            </div>
-            <div className="absolute inset-0 bg-[#43bbab]/10 blur-[80px] rounded-full -z-10" />
-          </motion.div>
-        </div>
-      </section> */}
-
-      {/* SECTION 3: FAQ */}
-      <section className="py-24 px-6 md:px-24 bg-white min-h-screen flex flex-col justify-center items-center">
-        <div className="max-w-[1000px] mx-auto w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="mb-12"
-          >
-            <h2 className="text-[#0f172a] text-4xl md:text-6xl font-bold tracking-tight text-center lg:text-left">
-              Frequently Asked{" "}
-              <span className="text-[#43bbab] font-serif italic font-light">
-                Questions
-              </span>
-            </h2>
-            <div className="h-1 w-20 bg-[#43bbab] mt-6 mx-auto lg:mx-0" />
-          </motion.div>
-
-          <div className="space-y-2">
+          <div className="space-y-4">
             {faqData.map((faq, index) => (
-              <div
-                key={index}
-                className={`border-b border-slate-100 transition-colors ${activeFaq === index ? "bg-slate-50/80" : ""}`}
-              >
+              <div key={index} className="border-b border-slate-100">
                 <button
                   onClick={() =>
                     setActiveFaq(activeFaq === index ? null : index)
                   }
-                  className="w-full py-6 flex items-center justify-between text-left px-4 group"
+                  className="w-full py-5 flex items-center justify-between text-left group"
                 >
                   <span
-                    className={`text-xl md:text-2xl font-semibold ${activeFaq === index ? "text-[#43bbab]" : "text-[#0f172a]"}`}
+                    className={`text-lg md:text-xl font-semibold transition-colors ${
+                      activeFaq === index ? "text-[#43bbab]" : "text-slate-800"
+                    }`}
                   >
                     {faq.q}
                   </span>
                   <div
-                    className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all ${activeFaq === index ? "rotate-180 bg-[#43bbab] border-[#43bbab] text-white" : "group-hover:border-[#43bbab]"}`}
+                    className={`transition-transform duration-300 ${
+                      activeFaq === index ? "rotate-180" : ""
+                    }`}
                   >
-                    <svg
-                      width="12"
-                      height="8"
-                      viewBox="0 0 14 8"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M1 1L7 7L13 1"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <ChevronDown
+                      className={
+                        activeFaq === index
+                          ? "text-[#43bbab]"
+                          : "text-slate-400"
+                      }
+                    />
                   </div>
                 </button>
                 <AnimatePresence>
@@ -444,8 +420,9 @@ export default function GigaLinkLandingPage() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
                     >
-                      <p className="pb-8 px-4 text-slate-500 text-lg md:text-xl font-light max-w-3xl">
+                      <p className="pb-6 text-slate-500 text-base md:text-lg leading-relaxed">
                         {faq.a}
                       </p>
                     </motion.div>
@@ -455,18 +432,15 @@ export default function GigaLinkLandingPage() {
             ))}
           </div>
 
-          <div className="mt-16 flex justify-center">
+          {/* New Button Section */}
+          <div className="mt-12 text-center md:text-left">
             <a
               href="https://gigalink.comclark.com/FAQ"
-              className="inline-block"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-[#43bbab] text-white font-semibold py-3 px-8 rounded-full shadow-lg shadow-[#43bbab]/20 hover:bg-[#38a394] transition-all duration-300 transform hover:-translate-y-1"
             >
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-10 py-4 bg-[#0f172a] text-white rounded-full font-bold tracking-widest uppercase text-sm hover:bg-[#43bbab] transition-colors shadow-xl"
-              >
-                Show More
-              </motion.button>
+              View All FAQs
             </a>
           </div>
         </div>
