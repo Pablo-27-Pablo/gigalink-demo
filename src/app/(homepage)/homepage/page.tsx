@@ -229,7 +229,7 @@ export default function GigaLinkLandingPage() {
               <h2 className="text-2xl md:text-5xl font-normal text-slate-800">
                 Why Choose
               </h2>
-              <div className="relative top-[-2px] w-[95px] h-[50px] md:w-[165px] md:h-[80px]">
+              <div className="relative top-[-3px] w-[95px] h-[50px] md:w-[172px] md:h-[85px]">
                 <Image
                   src={logo2} // Replace with your logo2 variable
                   alt="GigaLink"
@@ -237,7 +237,7 @@ export default function GigaLinkLandingPage() {
                   className="object-contain"
                 />
               </div>
-              <h2 className="text-3xl md:text-5xl font-normal text-slate-800">
+              <h2 className="text-3xl md:text-5xl font-normal text-slate-800 left-[-10px]">
                 ?
               </h2>
             </div>
@@ -379,7 +379,7 @@ export default function GigaLinkLandingPage() {
         <div className="max-w-3xl mx-auto w-full">
           <div className="mb-12 text-center md:text-left">
             <h2 className="text-3xl md:text-5xl font-light">
-              Gigalink <span className="text-[#43bbab] font-bold">FAQ</span>
+              Gigalink <span className="text-[#43bbab] font-bold">FAQs</span>
             </h2>
             <div className="h-1 w-16 bg-[#43bbab] mt-4 mx-auto md:mx-0" />
           </div>
@@ -435,7 +435,7 @@ export default function GigaLinkLandingPage() {
           {/* New Button Section */}
           <div className="mt-12 text-center md:text-left">
             <a
-              href="https://gigalink.comclark.com/FAQ"
+              href="https://gigalink.comclark.com/FAQs"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-[#43bbab] text-white font-semibold py-3 px-8 rounded-full shadow-lg shadow-[#43bbab]/20 hover:bg-[#38a394] transition-all duration-300 transform hover:-translate-y-1"

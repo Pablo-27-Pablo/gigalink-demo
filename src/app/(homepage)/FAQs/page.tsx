@@ -70,7 +70,7 @@ export default function FAQs() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 py-12 px-6">
+    <div className="min-h-screen bg-white py-12 px-6">
       <div className="max-w-3xl mx-auto">
         {/* Back to Homepage */}
         <button
@@ -83,18 +83,17 @@ export default function FAQs() {
 
         {/* Header */}
         <div className="mb-12">
-          <h1 className="text-4xl font-light tracking-tight text-slate-900 dark:text-white mb-4">
-            Gigalink <span className="text-[#5cc3ae]">FAQ</span>
+          <h1 className="text-4xl font-bold tracking-tight text-slate-900 mb-4">
+            Gigalink <span className="text-[#5cc3ae]">FAQs</span>
           </h1>
-          <div className="w-12 h-1 bg-[#5cc3ae] mb-6" />{" "}
-          {/* Small accent bar */}
-          <p className="text-slate-500 dark:text-slate-400">
+          <div className="w-12 h-1 bg-[#5cc3ae] mb-6" />
+          <p className="text-slate-500">
             Everything you need to know about GigaLink.
           </p>
         </div>
 
         {/* FAQ Accordion */}
-        <div className="divide-y divide-slate-100 dark:divide-slate-800">
+        <div className="divide-y divide-slate-100">
           {faqs.map((faq) => (
             <div key={faq.id} className="py-2">
               <button
@@ -106,7 +105,7 @@ export default function FAQs() {
                   className={`text-lg transition-colors duration-300 ${
                     openId === faq.id
                       ? "font-medium"
-                      : "text-slate-700 dark:text-slate-200 group-hover:text-slate-950 dark:group-hover:text-white"
+                      : "text-slate-700 group-hover:text-slate-950"
                   }`}
                 >
                   {faq.question}
@@ -132,7 +131,7 @@ export default function FAQs() {
                     }}
                   >
                     <div className="pb-10">
-                      <p className="text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl text-[1.05rem]">
+                      <p className="text-slate-600 leading-relaxed max-w-2xl text-[1.05rem]">
                         {faq.answer}
                       </p>
                     </div>
