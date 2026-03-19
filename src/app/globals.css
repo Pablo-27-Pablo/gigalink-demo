@@ -5,6 +5,20 @@
   --foreground: #171717;
 }
 
+/* Slick Carousel Fix */
+.slick-dots {
+  bottom: 25px !important;
+}
+
+.slick-dots li button:before {
+  color: white !important;
+  opacity: 0.5;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #43bbab !important;
+  opacity: 1;
+}
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
