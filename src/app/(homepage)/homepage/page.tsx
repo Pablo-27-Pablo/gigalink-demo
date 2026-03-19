@@ -36,7 +36,7 @@ const carouselImages = [
   },
   {
     url: "https://images.unsplash.com/photo-1569908420024-c8f709b75700?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080",
-    title: "QR Code Simplicity",
+    title: "Hassle-Free",
     description: "Just scan and go - no apps or registration needed",
   },
 ];
